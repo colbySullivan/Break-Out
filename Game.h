@@ -17,6 +17,7 @@ private:
     // Variables
     float gameWidth;
     float gameHeight;
+    sf::Vector2f paddleSize;
 
     //Window setup
     sf::RenderWindow* window;
@@ -27,6 +28,14 @@ private:
     // Create text
     sf::Text defaultMessage;
 
+    // Create paddles
+    sf::RectangleShape paddle;
+    sf::Texture paddleTexture;
+
+    // Create ball
+    sf::CircleShape ball;
+    sf::Texture ballTexture;
+
     //Running events
     sf::Event event;
 
@@ -34,6 +43,7 @@ private:
     void initWindow();
     void initFonts();
 	void initMessages();
+    void initPaddle();
 public:
 	//Constructors / Destructors
 	Game();

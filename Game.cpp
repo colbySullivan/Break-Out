@@ -10,6 +10,7 @@
 void Game::initVariables(){
     this->gameWidth = 800;
     this->gameHeight = 600;
+    this->paddleSize = sf::Vector2f(50, 100);
 }
 
 /**
@@ -42,6 +43,18 @@ void Game::initMessages(){
     this->defaultMessage.setPosition(170.f, 200.f);
     this->defaultMessage.setFillColor(sf::Color::White);
     this->defaultMessage.setString("Everything is set up correctly!\n\nPress esc to exit the window.");
+}
+
+void Game::initPaddle(){
+      // Create the left paddle
+    this->paddle.setSize(paddleSize - sf::Vector2f(3, 3));
+    this->paddle.setOutlineThickness(3);
+    this->paddle.setOutlineColor(sf::Color::Black);
+    this->paddle.setFillColor(sf::Color(100, 100, 200));
+    this->paddle.setOrigin(paddleSize / 2.f);
+    if(!this->paddleTexture.loadFromFile("resources/leftpaddle.png"))
+        return exit(0);
+    this->paddle.setTexture(&paddleTexture);
 }
 
 /**
@@ -77,6 +90,7 @@ void Game::rungame(){
 
     //Display default message
     this->window->draw(defaultMessage);
+    this->window->draw(paddle); // Need to center
 
     // Display things on screen
     this->window->display();
@@ -91,4 +105,5 @@ Game::Game(){
     this->initWindow();
     this->initFonts();
     this->initMessages();
+    this->initPaddle();
 }
