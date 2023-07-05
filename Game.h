@@ -42,6 +42,7 @@ private:
     float ballAngle;
     float ballRadius;
     float ballSpeed;
+    sf::Texture balltexture;
 
     //Running events
     sf::Event event;

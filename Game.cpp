@@ -72,9 +72,9 @@ void Game::initBall(){
     this->ball.setOutlineColor(sf::Color::Black);
     this->ball.setFillColor(sf::Color::White);
     this->ball.setOrigin(ballRadius / 1, ballRadius / 1);
-    // if (!this->balltexture.loadFromFile("resources/rumball.png"))
-    //     return exit(0);
-    // this->ball.setTexture(&balltexture);
+    if (!this->balltexture.loadFromFile("resources/rumball.png"))
+        return exit(0);
+    this->ball.setTexture(&balltexture);
 }
 
 /**
