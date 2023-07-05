@@ -41,6 +41,7 @@ private:
     sf::Texture ballTexture;
     float ballAngle;
     float ballRadius;
+    float ballSpeed;
 
     //Running events
     sf::Event event;
@@ -51,6 +52,8 @@ private:
     void initFonts();
 	void initMessages();
     void initPaddle();
+    void initBall();
+
 public:
 	//Constructors / Destructors
 	Game();

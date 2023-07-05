@@ -16,6 +16,7 @@ void Game::initVariables(){
     this->ballAngle = 0.f; // TODO
     this->ballRadius = 40.f;
     this->pi = 3.14159f;
+    this->ballSpeed = 400.f;
 }
 
 /**
@@ -64,6 +65,18 @@ void Game::initPaddle(){
     this->paddle.setTexture(&paddleTexture);
 }
 
+void Game::initBall(){
+    // Create the rum ball
+    this->ball.setRadius(ballRadius - 3);
+    //this->ball.setOutlineThickness(2);
+    this->ball.setOutlineColor(sf::Color::Black);
+    this->ball.setFillColor(sf::Color::White);
+    this->ball.setOrigin(ballRadius / 1, ballRadius / 1);
+    // if (!this->balltexture.loadFromFile("resources/rumball.png"))
+    //     return exit(0);
+    // this->ball.setTexture(&balltexture);
+}
+
 /**
  * Polls for left and right arrows to move paddle
  */
@@ -78,6 +91,8 @@ void Game::movePaddle(){
         (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
         paddle.move(paddleSpeed * deltaTime, 0.f);
     }
+    float factor = ballSpeed * deltaTime;
+    ball.move(std::cos(ballAngle) * factor, std::sin(ballAngle) * factor);
 }
 
 /**
@@ -123,22 +138,34 @@ void Game::pollEvents(){
 void Game::checkCollisions(){
     // Check collisions between the ball and the screen
     const std::string inputString = "Press space to restart or\nescape to exit.";
-    if (ball.getPosition().x - ballRadius <= 0.f){
-        ball.setPosition(ball.getPosition().x, gameHeight - ballRadius - 0.1f);
+    if (ball.getPosition().x <= 0.f){
+        this->ballAngle = pi - ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
+        this->ball.setPosition(0.1f, ball.getPosition().y);
     }
-    if (ball.getPosition().x + ballRadius > gameWidth){
-        ball.setPosition(ball.getPosition().x, gameHeight - ballRadius - 0.1f);
+    if (ball.getPosition().x > gameWidth){
+        this->ballAngle = pi - ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
+        this->ball.setPosition(gameWidth, ball.getPosition().y);
+    }
+    if (ball.getPosition().y - ballRadius < 0.f){
+        this->ballAngle = -ballAngle;
+        this->ball.setPosition(ball.getPosition().x, ballRadius + 0.1f);
     }
     if (ball.getPosition().y + ballRadius > gameHeight){
-        this->ballAngle = -ballAngle;
-        ball.setPosition(ball.getPosition().x, gameHeight - ballRadius - 0.1f);
-    }
-    // Ball goes below paddle
-    if (ball.getPosition().y - ballRadius < 0.f){
-        defaultMessage.setString("You Lost!\n\n" + inputString);
         this->isPlaying = false;
-        this->ballAngle = -ballAngle;
-        ball.setPosition(ball.getPosition().x, ballRadius + 0.1f);
+        defaultMessage.setString("You Lost!\n\n" + inputString);
+    }
+    // Check the collisions between the ball and the paddles
+    // Left Paddle
+    if (ball.getPosition().x - ballRadius < paddle.getPosition().x + paddleSize.x / 2 &&
+        ball.getPosition().x - ballRadius > paddle.getPosition().x &&
+        ball.getPosition().y + ballRadius >= paddle.getPosition().y - paddleSize.y / 2 &&
+        ball.getPosition().y - ballRadius <= paddle.getPosition().y + paddleSize.y / 2){
+        if (ball.getPosition().y > paddle.getPosition().y)
+            this->ballAngle = pi - ballAngle + static_cast<float>(std::rand() % 20) * pi / 180;
+        else
+            this->ballAngle = pi - ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
+        
+        this->ball.setPosition(paddle.getPosition().x + ballRadius + paddleSize.x / 2 + 0.1f, ball.getPosition().y);
     }
 }
 
@@ -153,9 +180,11 @@ void Game::rungame(){
     this->window->clear(sf::Color(0, 0, 0));
     if (this->isPlaying){
         // Move user paddle
-        this->movePaddles();
+        this->movePaddle();
         //Display default message
+        this->window->draw(ball);
         this->window->draw(paddle); // Need to center
+        this->checkCollisions();
     }
     else{
         this->window->draw(defaultMessage);
@@ -175,4 +204,5 @@ Game::Game(){
     this->initFonts();
     this->initMessages();
     this->initPaddle();
+    this->initBall();
 }
