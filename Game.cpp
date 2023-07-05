@@ -140,6 +140,16 @@ void Game::pollEvents(){
                     while (std::abs(std::cos(ballAngle)) < 0.7f);
                 }
             }
+            // TODO menu screen button
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+                this->defaultMessage.setString("Everything is set up correctly!\n\nPress esc to exit the window.");
+                this->window->draw(defaultMessage);
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+                this->defaultMessage.setString("YOU PRESSED UP!\n\nPress esc to exit the window.");
+                this->window->draw(defaultMessage);   
+            }
+                 
         }
 }
 
