@@ -18,6 +18,8 @@ private:
     float gameWidth;
     float gameHeight;
     sf::Vector2f paddleSize;
+    float paddleSpeed;
+    sf::Clock clock;
 
     //Window setup
     sf::RenderWindow* window;
@@ -53,5 +55,6 @@ public:
 
     //Functions
     void pollEvents();
+    void movePaddles();
     void rungame();
 };

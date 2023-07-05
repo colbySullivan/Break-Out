@@ -11,6 +11,7 @@ void Game::initVariables(){
     this->gameWidth = 800;
     this->gameHeight = 600;
     this->paddleSize = sf::Vector2f(50, 100);
+    this->paddleSpeed = 400.f;
 }
 
 /**
@@ -57,6 +58,19 @@ void Game::initPaddle(){
     this->paddle.setTexture(&paddleTexture);
 }
 
+void Game::movePaddles(){
+    float deltaTime = clock.restart().asSeconds();
+    // Move user paddle
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) &&
+        (paddle.getPosition().x - paddleSize.y / 2 > 5.f)){
+        paddle.move(-paddleSpeed * deltaTime, 0.f);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) &&
+        (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
+        paddle.move(paddleSpeed * deltaTime, 0.f);
+    }
+}
+
 /**
  * return True if window is still opened
  */
@@ -87,6 +101,9 @@ void Game::rungame(){
 
     // Clear the window
     this->window->clear(sf::Color(0, 0, 0));
+
+    // Move user paddle
+    this->movePaddles();
 
     //Display default message
     this->window->draw(defaultMessage);
