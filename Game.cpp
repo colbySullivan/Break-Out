@@ -168,7 +168,7 @@ void Game::checkCollisions(){
         ball.getPosition().x - ballRadius > paddle.getPosition().x &&
         ball.getPosition().y + ballRadius >= paddle.getPosition().y - paddleSize.y / 2 &&
         ball.getPosition().y - ballRadius <= paddle.getPosition().y + paddleSize.y / 2){
-        if (ball.getPosition().y > paddle.getPosition().y)
+        if (ball.getPosition().y > paddle.getPosition().y)// TODO may need to change this to reflect x axis
             this->ballAngle = pi - ballAngle + static_cast<float>(std::rand() % 20) * pi / 180;
         else
             this->ballAngle = pi - ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
