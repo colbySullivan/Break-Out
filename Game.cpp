@@ -14,6 +14,7 @@ void Game::initVariables(){
     this->paddleSpeed = 400.f;
     this->isPlaying = false;
     this->ballAngle = 0.f; // TODO
+    this->ballRadius = 40.f;
     this->pi = 3.14159f;
 }
 
@@ -39,7 +40,6 @@ void Game::initFonts(){
 /**
  * Creates a global text variable that is meant to display
  * a simple message on the window.
- *
  */
 void Game::initMessages(){
     this->defaultMessage.setFont(font);
@@ -49,6 +49,9 @@ void Game::initMessages(){
     this->defaultMessage.setString("Everything is set up correctly!\n\nPress esc to exit the window.");
 }
 
+/**
+ * Creates paddle that moves along the x axis
+ */
 void Game::initPaddle(){
       // Create the left paddle
     this->paddle.setSize(paddleSize - sf::Vector2f(3, 3));
@@ -61,7 +64,10 @@ void Game::initPaddle(){
     this->paddle.setTexture(&paddleTexture);
 }
 
-void Game::movePaddles(){
+/**
+ * Polls for left and right arrows to move paddle
+ */
+void Game::movePaddle(){
     float deltaTime = clock.restart().asSeconds();
     // Move user paddle
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) &&
@@ -112,6 +118,28 @@ void Game::pollEvents(){
                 }
             }
         }
+}
+
+void Game::checkCollisions(){
+    // Check collisions between the ball and the screen
+    const std::string inputString = "Press space to restart or\nescape to exit.";
+    if (ball.getPosition().x - ballRadius <= 0.f){
+        ball.setPosition(ball.getPosition().x, gameHeight - ballRadius - 0.1f);
+    }
+    if (ball.getPosition().x + ballRadius > gameWidth){
+        ball.setPosition(ball.getPosition().x, gameHeight - ballRadius - 0.1f);
+    }
+    if (ball.getPosition().y + ballRadius > gameHeight){
+        this->ballAngle = -ballAngle;
+        ball.setPosition(ball.getPosition().x, gameHeight - ballRadius - 0.1f);
+    }
+    // Ball goes below paddle
+    if (ball.getPosition().y - ballRadius < 0.f){
+        defaultMessage.setString("You Lost!\n\n" + inputString);
+        this->isPlaying = false;
+        this->ballAngle = -ballAngle;
+        ball.setPosition(ball.getPosition().x, ballRadius + 0.1f);
+    }
 }
 
 /**

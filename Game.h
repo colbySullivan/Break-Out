@@ -40,6 +40,7 @@ private:
     sf::CircleShape ball;
     sf::Texture ballTexture;
     float ballAngle;
+    float ballRadius;
 
     //Running events
     sf::Event event;
@@ -59,6 +60,7 @@ public:
 
     //Functions
     void pollEvents();
-    void movePaddles();
+    void movePaddle();
+    void checkCollisions();
     void rungame();
 };
