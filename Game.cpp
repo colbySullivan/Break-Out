@@ -10,7 +10,7 @@
 void Game::initVariables(){
     this->gameWidth = 800;
     this->gameHeight = 600;
-    this->paddleSize = sf::Vector2f(50, 100);
+    this->paddleSize = sf::Vector2f(200, 50);
     this->paddleSpeed = 400.f;
     this->isPlaying = false;
     this->ballAngle = 0.f; // TODO
@@ -155,7 +155,7 @@ void Game::checkCollisions(){
         defaultMessage.setString("You Lost!\n\n" + inputString);
     }
     // Check the collisions between the ball and the paddles
-    // Left Paddle
+    // TODO need to fix y axis collision
     if (ball.getPosition().x - ballRadius < paddle.getPosition().x + paddleSize.x / 2 &&
         ball.getPosition().x - ballRadius > paddle.getPosition().x &&
         ball.getPosition().y + ballRadius >= paddle.getPosition().y - paddleSize.y / 2 &&
