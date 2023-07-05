@@ -91,6 +91,14 @@ void Game::movePaddle(){
         (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
         paddle.move(paddleSpeed * deltaTime, 0.f);
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
+        (paddle.getPosition().x - paddleSize.y / 2 > 5.f)){
+        paddle.move(0.f, -paddleSpeed * deltaTime);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) &&
+        (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
+        paddle.move(0.f, paddleSpeed * deltaTime);
+    }
     float factor = ballSpeed * deltaTime;
     ball.move(std::cos(ballAngle) * factor, std::sin(ballAngle) * factor);
 }
