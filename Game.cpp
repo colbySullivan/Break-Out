@@ -12,6 +12,9 @@ void Game::initVariables(){
     this->gameHeight = 600;
     this->paddleSize = sf::Vector2f(50, 100);
     this->paddleSpeed = 400.f;
+    this->isPlaying = false;
+    this->ballAngle = 0.f; // TODO
+    this->pi = 3.14159f;
 }
 
 /**
@@ -89,6 +92,25 @@ void Game::pollEvents(){
                 this->window->close();
                 break;
             }
+            if (((this->event.type == sf::Event::KeyPressed) && (this->event.key.code == sf::Keyboard::Space)) ||
+                (this->event.type == sf::Event::TouchBegan)){
+                if (!this->isPlaying){
+                    // (re)start the game
+                    this->isPlaying = true;
+                    clock.restart();
+
+                    // Reset the position of the paddles and ball
+                    paddle.setPosition(10.f + paddleSize.x / 2.f, gameHeight / 2.f);
+                    ball.setPosition(gameWidth / 2.f, gameHeight / 2.f);
+
+                    // Reset the ball angle
+                    do{
+                        // Make sure the ball initial angle is not too much vertical
+                        ballAngle = static_cast<float>(std::rand() % 360) * 2.f * pi / 360.f;
+                    }
+                    while (std::abs(std::cos(ballAngle)) < 0.7f);
+                }
+            }
         }
 }
 
@@ -101,13 +123,15 @@ void Game::rungame(){
 
     // Clear the window
     this->window->clear(sf::Color(0, 0, 0));
-
-    // Move user paddle
-    this->movePaddles();
-
-    //Display default message
-    this->window->draw(defaultMessage);
-    this->window->draw(paddle); // Need to center
+    if (this->isPlaying){
+        // Move user paddle
+        this->movePaddles();
+        //Display default message
+        this->window->draw(paddle); // Need to center
+    }
+    else{
+        this->window->draw(defaultMessage);
+    }
 
     // Display things on screen
     this->window->display();

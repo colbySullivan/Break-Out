@@ -6,6 +6,7 @@
 #include <SFML/Network.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Main.hpp>
+#include <cmath>
 
 /*
  *	Class that acts as the game engine.
@@ -20,6 +21,7 @@ private:
     sf::Vector2f paddleSize;
     float paddleSpeed;
     sf::Clock clock;
+    float pi;
 
     //Window setup
     sf::RenderWindow* window;
@@ -37,9 +39,11 @@ private:
     // Create ball
     sf::CircleShape ball;
     sf::Texture ballTexture;
+    float ballAngle;
 
     //Running events
     sf::Event event;
+    bool isPlaying;
 
     void initVariables();
     void initWindow();
