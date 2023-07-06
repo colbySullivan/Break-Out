@@ -97,6 +97,7 @@ void Game::movePaddle(){
         paddle.move(paddleSpeed * deltaTime, 0.f);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)){
+
         ball.setPosition(gameWidth / 2.f, gameHeight / 2.f);
     }
     // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
@@ -188,28 +189,27 @@ void Game::checkWallCollisions(){
     }
 }
 
-void Game::checkCollisions(sf::RectangleShape shape){
+void Game::checkCollisions(sf::RectangleShape shape, bool isBlock){
     // Check the collisions between the ball and the paddles
     // TODO need to fix y axis collision
     if (ball.getPosition().x - ballRadius < shape.getPosition().x + paddleSize.x / 2 &&
         ball.getPosition().x - ballRadius > shape.getPosition().x - paddleSize.x / 2 &&
-        ball.getPosition().y + ballRadius >= shape.getPosition().y - paddleSize.y / 2 + 0.1f &&
-        ball.getPosition().y - ballRadius <= shape.getPosition().y + paddleSize.y / 2 + 0.1f){
+        ball.getPosition().y + ballRadius - 20.0f > shape.getPosition().y - paddleSize.y / 2 - 0.1f &&
+        ball.getPosition().y - ballRadius + 20.0f <= shape.getPosition().y + paddleSize.y / 2 + 0.1f){
         if (ball.getPosition().x >= shape.getPosition().x)// TODO may need to change this to reflect x axis
             this->ballAngle = pi + ballAngle + static_cast<float>(std::rand() % 20) * pi / 180;
         else
             this->ballAngle = pi + ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
-        if (ball.getPosition().y < shape.getPosition().y)
-            this->ball.setPosition(ball.getPosition().x, shape.getPosition().y - ballRadius - paddleSize.y / 2 - 0.1f);
-        else
-            this->ball.setPosition(ball.getPosition().x, shape.getPosition().y + ballRadius + paddleSize.y / 2 + 0.1f);
+        if(isBlock){
+            m_block_list.pop_back();
+        }
     }
 }
 
 void Game::blockCollisions(){
     std::list<sf::RectangleShape>::iterator it;
-        for (it=m_obj_list.begin() ; it != m_obj_list.end(); it++ )
-            this->checkCollisions(*it);
+    for (it=m_block_list.begin() ; it != m_block_list.end(); it++ )
+        this->checkCollisions(*it, true);
 }
 
 void Game::checkMenu(){
@@ -225,7 +225,7 @@ void Game::checkMenu(){
 }
 
 void Game::initBlock(){
-    for(int i = 0; i < 2; i++){
+    for(int i = 0; i < 3; i++){
         int x = 50 * (rand()%10);
         int y = 50 * (rand()%10);
         sf::RectangleShape block;
@@ -234,14 +234,14 @@ void Game::initBlock(){
         block.setFillColor(sf::Color::White);
         block.setOrigin(paddleSize / 2.f);
         block.setPosition(x,y);
-        m_obj_list.push_back(block);
+        this->m_block_list.push_back(block);
     }
 }
 
 void Game::displayBlocks(){
     std::list<sf::RectangleShape>::iterator it;
-        for (it=m_obj_list.begin() ; it != m_obj_list.end(); it++ )
-            this->window->draw(*it);
+    for (it=m_block_list.begin() ; it != m_block_list.end(); it++ )
+        this->window->draw(*it);
 }
 
 /**
@@ -260,8 +260,10 @@ void Game::rungame(){
         this->window->draw(ball);
         this->window->draw(paddle);
         this->checkWallCollisions();
-        this->checkCollisions(paddle);
+        this->checkCollisions(paddle, false);
         this->blockCollisions();
+        if(m_block_list.size() == 0)
+            this->isPlaying = false;
     }
     else{
         this->checkMenu();

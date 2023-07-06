@@ -53,7 +53,7 @@ private:
     sf::Event event;
     bool isPlaying;
 
-    std::list<sf::RectangleShape> m_obj_list; 
+    std::list<sf::RectangleShape> m_block_list; 
 
     void initVariables();
     void initWindow();
@@ -75,7 +75,7 @@ public:
     void pollEvents();
     void movePaddle();
     void checkWallCollisions();
-    void checkCollisions(sf::RectangleShape);
+    void checkCollisions(sf::RectangleShape, bool);
     void blockCollisions();
     void displayBlocks();
     void rungame();
