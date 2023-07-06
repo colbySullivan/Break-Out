@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Main.hpp>
 #include <cmath>
+#include <list>
 
 /*
  *	Class that acts as the game engine.
@@ -52,12 +53,15 @@ private:
     sf::Event event;
     bool isPlaying;
 
+    std::list<sf::RectangleShape> m_obj_list; 
+
     void initVariables();
     void initWindow();
     void initFonts();
 	void initMessages();
     void initPaddle();
     void initBall();
+    void createBreak();
 
 public:
 	//Constructors / Destructors

@@ -213,6 +213,19 @@ void Game::checkMenu(){
         
 }
 
+void Game::createBreak(){
+    for(int i = 0; i < 10; i++){
+        int x = 50 * (rand()%10);
+        int y = 50 * (rand()%10);
+        sf::RectangleShape block;
+        block.setSize(paddleSize - sf::Vector2f(3, 3));
+        block.setOutlineThickness(3);
+        block.setFillColor(sf::Color::White);
+        block.setPosition(x,y);
+        m_obj_list.push_back(block);
+    }
+}
+
 /**
  * Main run file that polls and displays
  */
@@ -225,6 +238,9 @@ void Game::rungame(){
     if (this->isPlaying){
         // Move user paddle
         this->movePaddle();
+        std::list<sf::RectangleShape>::iterator it;
+        for (it=m_obj_list.begin() ; it != m_obj_list.end(); it++ )
+            this->window->draw(*it);
         this->window->draw(ball);
         this->window->draw(paddle); // Need to center
         this->checkCollisions();
@@ -248,6 +264,7 @@ Game::Game(){
     this->initWindow();
     this->initFonts();
     this->initMessages();
+    this->createBreak();
     this->initPaddle();
     this->initBall();
 }
