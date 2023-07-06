@@ -11,7 +11,7 @@ void Game::initVariables(){
     this->gameWidth = 800;
     this->gameHeight = 600;
     this->paddleSize = sf::Vector2f(200, 50);
-    this->paddleSpeed = 400.f;
+    this->paddleSpeed = 600.f;
     this->isPlaying = false;
     this->ballAngle = 0.f; // TODO
     this->ballRadius = 40.f;
@@ -199,8 +199,10 @@ void Game::checkCollisions(sf::RectangleShape shape){
             this->ballAngle = pi + ballAngle + static_cast<float>(std::rand() % 20) * pi / 180;
         else
             this->ballAngle = pi + ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
-        
-        this->ball.setPosition(ball.getPosition().x, shape.getPosition().y - ballRadius - paddleSize.y / 2 - 0.1f);
+        if (ball.getPosition().y < shape.getPosition().y)
+            this->ball.setPosition(ball.getPosition().x, shape.getPosition().y - ballRadius - paddleSize.y / 2 - 0.1f);
+        else
+            this->ball.setPosition(ball.getPosition().x, shape.getPosition().y + ballRadius + paddleSize.y / 2 + 0.1f);
     }
 }
 
