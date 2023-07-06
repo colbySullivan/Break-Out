@@ -94,6 +94,8 @@ void Game::movePaddle(){
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
         (paddle.getPosition().x - paddleSize.y / 2 > 5.f)){
         paddle.move(0.f, -paddleSpeed * deltaTime);
+        // std::string cpuScore = std::to_string(paddle.getPosition().y);
+        // defaultMessage.setString(cpuScore);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) &&
         (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
@@ -175,15 +177,15 @@ void Game::checkCollisions(){
     // Check the collisions between the ball and the paddles
     // TODO need to fix y axis collision
     if (ball.getPosition().x - ballRadius < paddle.getPosition().x + paddleSize.x / 2 &&
-        ball.getPosition().x - ballRadius > paddle.getPosition().x &&
-        ball.getPosition().y + ballRadius >= paddle.getPosition().y - paddleSize.y / 2 &&
-        ball.getPosition().y - ballRadius <= paddle.getPosition().y + paddleSize.y / 2){
-        if (ball.getPosition().y > paddle.getPosition().y)// TODO may need to change this to reflect x axis
-            this->ballAngle = pi - ballAngle + static_cast<float>(std::rand() % 20) * pi / 180;
+        ball.getPosition().x - ballRadius > paddle.getPosition().x - paddleSize.x / 2 &&
+        ball.getPosition().y + ballRadius >= paddle.getPosition().y - paddleSize.y / 2 + 0.1f &&
+        ball.getPosition().y - ballRadius <= paddle.getPosition().y + paddleSize.y / 2 + 0.1f){
+        if (ball.getPosition().x >= paddle.getPosition().x)// TODO may need to change this to reflect x axis
+            this->ballAngle = pi + ballAngle + static_cast<float>(std::rand() % 20) * pi / 180;
         else
-            this->ballAngle = pi - ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
+            this->ballAngle = pi + ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
         
-        this->ball.setPosition(paddle.getPosition().x + ballRadius + paddleSize.x / 2 + 0.1f, ball.getPosition().y);
+        this->ball.setPosition(ball.getPosition().x, paddle.getPosition().y - ballRadius - paddleSize.y / 2 - 0.1f);
     }
 }
 
@@ -200,6 +202,7 @@ void Game::rungame(){
         // Move user paddle
         this->movePaddle();
         //Display default message
+        // this->window->draw(defaultMessage);
         this->window->draw(ball);
         this->window->draw(paddle); // Need to center
         this->checkCollisions();
