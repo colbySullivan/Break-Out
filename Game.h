@@ -25,6 +25,8 @@ private:
 
     //Window setup
     sf::RenderWindow* window;
+    sf::Texture backgroundTexture;
+    sf::Sprite background;
 
     // Set font
     sf::Font font;

@@ -26,6 +26,9 @@ void Game::initWindow(){
 	this->window = new sf::RenderWindow(sf::VideoMode(static_cast<unsigned int>(gameWidth), static_cast<unsigned int>(gameHeight), 32), "Template",
                             sf::Style::Titlebar | sf::Style::Close);
     this->window->setVerticalSyncEnabled(true);
+    if(!this->backgroundTexture.loadFromFile("resources/background.jpg"))
+        return exit(0);
+    this->background = sf::Sprite(backgroundTexture);
 }
 
 /**
@@ -90,6 +93,9 @@ void Game::movePaddle(){
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) &&
         (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
         paddle.move(paddleSpeed * deltaTime, 0.f);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)){
+        ball.setPosition(gameWidth / 2.f, gameHeight / 2.f);
     }
     // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
     //     (paddle.getPosition().x - paddleSize.y / 2 > 5.f)){
@@ -199,8 +205,7 @@ void Game::rungame(){
     if (this->isPlaying){
         // Move user paddle
         this->movePaddle();
-        //Display default message
-        // this->window->draw(defaultMessage);
+        this->window->draw(background);
         this->window->draw(ball);
         this->window->draw(paddle); // Need to center
         this->checkCollisions();
