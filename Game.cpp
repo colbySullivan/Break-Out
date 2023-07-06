@@ -230,6 +230,7 @@ void Game::initBlock(){
         block.setSize(paddleSize - sf::Vector2f(3, 3));
         block.setOutlineThickness(3);
         block.setFillColor(sf::Color::White);
+        block.setOrigin(paddleSize / 2.f);
         block.setPosition(x,y);
         m_obj_list.push_back(block);
     }
@@ -255,7 +256,7 @@ void Game::rungame(){
         this->movePaddle();
         this->displayBlocks();
         this->window->draw(ball);
-        this->window->draw(paddle); // Need to center
+        this->window->draw(paddle);
         this->checkWallCollisions();
         this->checkCollisions(paddle);
         this->blockCollisions();
