@@ -91,6 +91,14 @@ void Game::movePaddle(){
         (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
         paddle.move(paddleSpeed * deltaTime, 0.f);
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
+        (paddle.getPosition().x - paddleSize.y / 2 > 5.f)){
+        paddle.move(0.f, -paddleSpeed * deltaTime);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) &&
+        (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
+        paddle.move(0.f, paddleSpeed * deltaTime);
+    }
     float factor = ballSpeed * deltaTime;
     ball.move(std::cos(ballAngle) * factor, std::sin(ballAngle) * factor);
 }
@@ -132,6 +140,16 @@ void Game::pollEvents(){
                     while (std::abs(std::cos(ballAngle)) < 0.7f);
                 }
             }
+            // TODO menu screen button
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+                this->defaultMessage.setString("Everything is set up correctly!\n\nPress esc to exit the window.");
+                this->window->draw(defaultMessage);
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+                this->defaultMessage.setString("YOU PRESSED UP!\n\nPress esc to exit the window.");
+                this->window->draw(defaultMessage);   
+            }
+                 
         }
 }
 
@@ -160,7 +178,7 @@ void Game::checkCollisions(){
         ball.getPosition().x - ballRadius > paddle.getPosition().x &&
         ball.getPosition().y + ballRadius >= paddle.getPosition().y - paddleSize.y / 2 &&
         ball.getPosition().y - ballRadius <= paddle.getPosition().y + paddleSize.y / 2){
-        if (ball.getPosition().y > paddle.getPosition().y)
+        if (ball.getPosition().y > paddle.getPosition().y)// TODO may need to change this to reflect x axis
             this->ballAngle = pi - ballAngle + static_cast<float>(std::rand() % 20) * pi / 180;
         else
             this->ballAngle = pi - ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
