@@ -91,16 +91,14 @@ void Game::movePaddle(){
         (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
         paddle.move(paddleSpeed * deltaTime, 0.f);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
-        (paddle.getPosition().x - paddleSize.y / 2 > 5.f)){
-        paddle.move(0.f, -paddleSpeed * deltaTime);
-        // std::string cpuScore = std::to_string(paddle.getPosition().y);
-        // defaultMessage.setString(cpuScore);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) &&
-        (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
-        paddle.move(0.f, paddleSpeed * deltaTime);
-    }
+    // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
+    //     (paddle.getPosition().x - paddleSize.y / 2 > 5.f)){
+    //     paddle.move(0.f, -paddleSpeed * deltaTime);
+    // }
+    // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) &&
+    //     (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
+    //     paddle.move(0.f, paddleSpeed * deltaTime);
+    // }
     float factor = ballSpeed * deltaTime;
     ball.move(std::cos(ballAngle) * factor, std::sin(ballAngle) * factor);
 }
@@ -131,7 +129,7 @@ void Game::pollEvents(){
                     clock.restart();
 
                     // Reset the position of the paddles and ball
-                    paddle.setPosition(10.f + paddleSize.x / 2.f, gameHeight / 2.f);
+                    paddle.setPosition(10.f + paddleSize.x / 2.f, gameHeight - 10.f - paddleSize.y);
                     ball.setPosition(gameWidth / 2.f, gameHeight / 2.f);
 
                     // Reset the ball angle
