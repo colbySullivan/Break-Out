@@ -34,7 +34,7 @@ void Game::initWindow(){
  * return True if file is found
  */
 void Game::initFonts(){
-    if (!this->font.loadFromFile("resources/tuffy.ttf"))
+    if (!this->font.loadFromFile("resources/cheeseburger.ttf"))
         return exit(0);
 }
 
