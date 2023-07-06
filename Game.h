@@ -61,7 +61,7 @@ private:
 	void initMessages();
     void initPaddle();
     void initBall();
-    void createBreak();
+    void initBlock();
 
 public:
 	//Constructors / Destructors
@@ -74,6 +74,9 @@ public:
     //Functions
     void pollEvents();
     void movePaddle();
-    void checkCollisions();
+    void checkWallCollisions();
+    void checkCollisions(sf::RectangleShape);
+    void blockCollisions();
+    void displayBlocks();
     void rungame();
 };
