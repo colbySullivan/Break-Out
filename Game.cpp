@@ -174,14 +174,17 @@ void Game::checkWallCollisions(){
     if (ball.getPosition().x <= 0.f){
         this->ballAngle = pi - ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
         this->ball.setPosition(0.1f, ball.getPosition().y);
+        this->ballSpeed += 40;
     }
     if (ball.getPosition().x > gameWidth){
         this->ballAngle = pi - ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
         this->ball.setPosition(gameWidth, ball.getPosition().y);
+        this->ballSpeed += 40;
     }
     if (ball.getPosition().y - ballRadius < 0.f){
         this->ballAngle = -ballAngle;
         this->ball.setPosition(ball.getPosition().x, ballRadius + 0.1f);
+        this->ballSpeed += 40;
     }
     if (ball.getPosition().y + ballRadius > gameHeight){
         this->isPlaying = false;
@@ -262,8 +265,11 @@ void Game::rungame(){
         this->checkWallCollisions();
         this->checkCollisions(paddle, false);
         this->blockCollisions();
-        if(m_block_list.size() == 0)
+        if(m_block_list.size() == 0){
+            defaultMessage.setString("You won!");
             this->isPlaying = false;
+        }
+            
     }
     else{
         this->checkMenu();
