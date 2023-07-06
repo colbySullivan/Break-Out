@@ -17,6 +17,8 @@ void Game::initVariables(){
     this->ballRadius = 40.f;
     this->pi = 3.14159f;
     this->ballSpeed = 400.f;
+    this->menuOption = 0;
+    this->ready = true;
 }
 
 /**
@@ -26,7 +28,7 @@ void Game::initWindow(){
 	this->window = new sf::RenderWindow(sf::VideoMode(static_cast<unsigned int>(gameWidth), static_cast<unsigned int>(gameHeight), 32), "Template",
                             sf::Style::Titlebar | sf::Style::Close);
     this->window->setVerticalSyncEnabled(true);
-    if(!this->backgroundTexture.loadFromFile("resources/background.jpg"))
+    if(!this->backgroundTexture.loadFromFile("resources/basicMenu.png"))
         return exit(0);
     this->background = sf::Sprite(backgroundTexture);
 }
@@ -48,9 +50,9 @@ void Game::initFonts(){
 void Game::initMessages(){
     this->defaultMessage.setFont(font);
     this->defaultMessage.setCharacterSize(40);
-    this->defaultMessage.setPosition(170.f, 200.f);
-    this->defaultMessage.setFillColor(sf::Color::White);
-    this->defaultMessage.setString("Everything is set up correctly!\n\nPress esc to exit the window.");
+    this->defaultMessage.setPosition(350.f, 300.f);
+    this->defaultMessage.setFillColor(sf::Color::Black);
+    this->defaultMessage.setString("Start");
 }
 
 /**
@@ -129,7 +131,7 @@ void Game::pollEvents(){
             }
             if (((this->event.type == sf::Event::KeyPressed) && (this->event.key.code == sf::Keyboard::Space)) ||
                 (this->event.type == sf::Event::TouchBegan)){
-                if (!this->isPlaying){
+                if (!this->isPlaying && ready){
                     // (re)start the game
                     this->isPlaying = true;
                     clock.restart();
@@ -145,15 +147,21 @@ void Game::pollEvents(){
                     }
                     while (std::abs(std::cos(ballAngle)) < 0.7f);
                 }
+                else{ // Quit option
+                    this->window->close();
+                    break;
+                }
+                    
             }
             // TODO menu screen button
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-                this->defaultMessage.setString("Everything is set up correctly!\n\nPress esc to exit the window.");
-                this->window->draw(defaultMessage);
+                if(menuOption == 0)
+                    this->menuOption = 1;
+                else
+                    this->menuOption = (menuOption - 1) % 2; // Loops options
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
-                this->defaultMessage.setString("YOU PRESSED UP!\n\nPress esc to exit the window.");
-                this->window->draw(defaultMessage);   
+                this->menuOption = (menuOption + 1) % 2;   
             }
                  
         }
@@ -193,6 +201,18 @@ void Game::checkCollisions(){
     }
 }
 
+void Game::checkMenu(){
+    if(menuOption == 1){
+        this->ready = false;
+        this->defaultMessage.setString("Quit");
+    }
+    else{
+        this->ready = true;
+        this->defaultMessage.setString("Start");
+    }
+        
+}
+
 /**
  * Main run file that polls and displays
  */
@@ -205,12 +225,13 @@ void Game::rungame(){
     if (this->isPlaying){
         // Move user paddle
         this->movePaddle();
-        this->window->draw(background);
         this->window->draw(ball);
         this->window->draw(paddle); // Need to center
         this->checkCollisions();
     }
     else{
+        this->checkMenu();
+        this->window->draw(background);
         this->window->draw(defaultMessage);
     }
 

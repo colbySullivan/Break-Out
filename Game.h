@@ -22,6 +22,8 @@ private:
     float paddleSpeed;
     sf::Clock clock;
     float pi;
+    int menuOption;
+    bool ready;
 
     //Window setup
     sf::RenderWindow* window;
@@ -63,6 +65,7 @@ public:
 
 	//Accessors
 	const bool running() const;
+    void checkMenu();
 
     //Functions
     void pollEvents();
