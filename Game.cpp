@@ -167,7 +167,11 @@ void Game::pollEvents(){
                  
         }
 }
-
+/**
+ * Checks if the center on the ball goes past any
+ * point on the x and y wall axes.
+ * Ends game if ball hits bottom line.
+ */
 void Game::checkWallCollisions(){
     // Check collisions between the ball and the screen
     const std::string inputString = "Press space to restart or\nescape to exit.";
@@ -192,6 +196,12 @@ void Game::checkWallCollisions(){
     }
 }
 
+/**
+ * Checks if ball collides with given shape
+ * 
+ * param shape - either the paddle or a block
+ * param isBlock - shape collided is a block
+ */
 void Game::checkCollisions(sf::RectangleShape shape, bool isBlock){
     // Check the collisions between the ball and the paddles
     // TODO need to fix y axis collision
@@ -209,12 +219,18 @@ void Game::checkCollisions(sf::RectangleShape shape, bool isBlock){
     }
 }
 
+/**
+ * Traverse list of blocks to check if the block collided
+ */
 void Game::blockCollisions(){
     std::list<sf::RectangleShape>::iterator it;
     for (it=m_block_list.begin() ; it != m_block_list.end(); it++ )
         this->checkCollisions(*it, true);
 }
 
+/**
+ * Players can only start when it displays "Start"
+ */
 void Game::checkMenu(){
     if(menuOption == 1){
         this->ready = false;
@@ -227,6 +243,9 @@ void Game::checkMenu(){
         
 }
 
+/**
+ * Create random blocks and push them to a list
+ */
 void Game::initBlock(){
     for(int i = 0; i < 3; i++){
         int x = 50 * (rand()%10);
@@ -241,6 +260,9 @@ void Game::initBlock(){
     }
 }
 
+/**
+ * Traverse list of random blocks and display them to window
+ */
 void Game::displayBlocks(){
     std::list<sf::RectangleShape>::iterator it;
     for (it=m_block_list.begin() ; it != m_block_list.end(); it++ )
