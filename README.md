@@ -38,6 +38,9 @@ make clean
 .\clean.bat
 ```
 
+## Demo
+![breakOutDemo](https://github.com/colbySullivan/Break-Out/assets/88957296/fea8c270-a3de-4226-841d-f7d1dd0e09d0)
+
 # Dependencies
 Install of SMFL is required to run the program.
 
