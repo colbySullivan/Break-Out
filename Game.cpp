@@ -134,6 +134,7 @@ void Game::pollEvents(){
                 (this->event.type == sf::Event::TouchBegan)){
                 if (!this->isPlaying && ready){
                     // (re)start the game
+                    this->initBlock();
                     this->isPlaying = true;
                     clock.restart();
 
@@ -204,17 +205,16 @@ void Game::checkWallCollisions(){
  */
 void Game::checkCollisions(sf::RectangleShape shape, bool isBlock){
     // Check the collisions between the ball and the paddles
-    // TODO need to fix y axis collision
     if (ball.getPosition().x - ballRadius < shape.getPosition().x + paddleSize.x / 2 &&
         ball.getPosition().x - ballRadius > shape.getPosition().x - paddleSize.x / 2 &&
         ball.getPosition().y + ballRadius - 20.0f > shape.getPosition().y - paddleSize.y / 2 - 0.1f &&
         ball.getPosition().y - ballRadius + 20.0f <= shape.getPosition().y + paddleSize.y / 2 + 0.1f){
-        if (ball.getPosition().x >= shape.getPosition().x)// TODO may need to change this to reflect x axis
+        if (ball.getPosition().x >= shape.getPosition().x) // bounce accross the x axis
             this->ballAngle = pi + ballAngle + static_cast<float>(std::rand() % 20) * pi / 180;
         else
             this->ballAngle = pi + ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
         if(isBlock){
-            m_block_list.pop_back();
+            m_block_list.pop_front();
         }
     }
 }
@@ -312,7 +312,6 @@ Game::Game(){
     this->initWindow();
     this->initFonts();
     this->initMessages();
-    this->initBlock();
     this->initPaddle();
     this->initBall();
 }
