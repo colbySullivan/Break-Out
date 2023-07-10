@@ -40,6 +40,10 @@ private:
     // Create paddles
     sf::RectangleShape paddle;
     sf::Texture paddleTexture;
+    sf::Texture dannyTexture;
+    sf::IntRect dannySprite;
+    sf::Sprite sprite;
+    sf::Clock dannyClock;
 
     // Create ball
     sf::CircleShape ball;
@@ -53,15 +57,13 @@ private:
     sf::Event event;
     bool isPlaying;
 
-    std::list<sf::RectangleShape> m_block_list; 
-
     void initVariables();
     void initWindow();
     void initFonts();
 	void initMessages();
     void initPaddle();
     void initBall();
-    void initBlock();
+    void danny();
 
 public:
 	//Constructors / Destructors
@@ -75,8 +77,6 @@ public:
     void pollEvents();
     void movePaddle();
     void checkWallCollisions();
-    void checkCollisions(sf::RectangleShape, bool);
-    void blockCollisions();
-    void displayBlocks();
+    void checkCollisions();
     void rungame();
 };

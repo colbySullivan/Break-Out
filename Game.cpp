@@ -10,7 +10,7 @@
 void Game::initVariables(){
     this->gameWidth = 800;
     this->gameHeight = 600;
-    this->paddleSize = sf::Vector2f(200, 50);
+    this->paddleSize = sf::Vector2f(100, 100);
     this->paddleSpeed = 600.f;
     this->isPlaying = false;
     this->ballAngle = 0.f; // TODO
@@ -68,6 +68,10 @@ void Game::initPaddle(){
     if(!this->paddleTexture.loadFromFile("resources/leftpaddle.png"))
         return exit(0);
     this->paddle.setTexture(&paddleTexture);
+
+    this->dannyTexture.loadFromFile("resources/dannysprite.png");
+    this->dannySprite = sf::IntRect(32, 0, 32, 48); //128 x 192
+    this->sprite = sf::Sprite(dannyTexture,dannySprite);
 }
 
 void Game::initBall(){
@@ -89,25 +93,25 @@ void Game::movePaddle(){
     float deltaTime = clock.restart().asSeconds();
     // Move user paddle
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) &&
-        (paddle.getPosition().x - paddleSize.y / 2 > 5.f)){
-        paddle.move(-paddleSpeed * deltaTime, 0.f);
+        (sprite.getPosition().x - paddleSize.y / 2 > 5.f)){
+        sprite.move(-paddleSpeed * deltaTime, 0.f);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) &&
         (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
-        paddle.move(paddleSpeed * deltaTime, 0.f);
+        sprite.move(paddleSpeed * deltaTime, 0.f);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)){
 
         ball.setPosition(gameWidth / 2.f, gameHeight / 2.f);
     }
-    // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
-    //     (paddle.getPosition().x - paddleSize.y / 2 > 5.f)){
-    //     paddle.move(0.f, -paddleSpeed * deltaTime);
-    // }
-    // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) &&
-    //     (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
-    //     paddle.move(0.f, paddleSpeed * deltaTime);
-    // }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) &&
+        (paddle.getPosition().x - paddleSize.y / 2 > 5.f)){
+        sprite.move(0.f, -paddleSpeed * deltaTime);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) &&
+        (paddle.getPosition().x + paddleSize.y / 2 < gameWidth - 5.f)){
+        sprite.move(0.f, paddleSpeed * deltaTime);
+    }
     float factor = ballSpeed * deltaTime;
     ball.move(std::cos(ballAngle) * factor, std::sin(ballAngle) * factor);
 }
@@ -134,7 +138,6 @@ void Game::pollEvents(){
                 (this->event.type == sf::Event::TouchBegan)){
                 if (!this->isPlaying && ready){
                     // (re)start the game
-                    this->initBlock();
                     this->isPlaying = true;
                     clock.restart();
 
@@ -177,7 +180,7 @@ void Game::checkWallCollisions(){
     // Check collisions between the ball and the screen
     const std::string inputString = "Press space to restart or\nescape to exit.";
     if (ball.getPosition().x <= 0.f){
-        this->ballAngle = pi - ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
+        this->ballAngle = pi + ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
         this->ball.setPosition(0.1f, ball.getPosition().y);
         this->ballSpeed += 40;
     }
@@ -192,8 +195,8 @@ void Game::checkWallCollisions(){
         this->ballSpeed += 40;
     }
     if (ball.getPosition().y + ballRadius > gameHeight){
-        this->isPlaying = false;
-        defaultMessage.setString("You Lost!\n\n" + inputString);
+        this->ballAngle = -ballAngle;
+        ball.setPosition(ball.getPosition().x, gameHeight - ballRadius - 0.1f);
     }
 }
 
@@ -203,29 +206,14 @@ void Game::checkWallCollisions(){
  * param shape - either the paddle or a block
  * param isBlock - shape collided is a block
  */
-void Game::checkCollisions(sf::RectangleShape shape, bool isBlock){
+void Game::checkCollisions(){
     // Check the collisions between the ball and the paddles
-    if (ball.getPosition().x - ballRadius < shape.getPosition().x + paddleSize.x / 2 &&
-        ball.getPosition().x - ballRadius > shape.getPosition().x - paddleSize.x / 2 &&
-        ball.getPosition().y + ballRadius - 20.0f > shape.getPosition().y - paddleSize.y / 2 - 0.1f &&
-        ball.getPosition().y - ballRadius + 20.0f <= shape.getPosition().y + paddleSize.y / 2 + 0.1f){
-        if (ball.getPosition().x >= shape.getPosition().x) // bounce accross the x axis
-            this->ballAngle = pi + ballAngle + static_cast<float>(std::rand() % 20) * pi / 180;
-        else
-            this->ballAngle = pi + ballAngle - static_cast<float>(std::rand() % 20) * pi / 180;
-        if(isBlock){
-            m_block_list.pop_front();
-        }
+    if (ball.getPosition().x - ballRadius < sprite.getPosition().x + paddleSize.x / 2 &&
+        ball.getPosition().x - ballRadius > sprite.getPosition().x - paddleSize.x / 2 &&
+        ball.getPosition().y + ballRadius - 20.0f > sprite.getPosition().y - paddleSize.y / 2 - 0.1f &&
+        ball.getPosition().y - ballRadius + 20.0f <= sprite.getPosition().y + paddleSize.y / 2 + 0.1f){
+            this->isPlaying = false;
     }
-}
-
-/**
- * Traverse list of blocks to check if the block collided
- */
-void Game::blockCollisions(){
-    std::list<sf::RectangleShape>::iterator it;
-    for (it=m_block_list.begin() ; it != m_block_list.end(); it++ )
-        this->checkCollisions(*it, true);
 }
 
 /**
@@ -243,30 +231,16 @@ void Game::checkMenu(){
         
 }
 
-/**
- * Create random blocks and push them to a list
- */
-void Game::initBlock(){
-    for(int i = 0; i < 3; i++){
-        int x = 50 * (rand()%10);
-        int y = 50 * (rand()%10);
-        sf::RectangleShape block;
-        block.setSize(paddleSize - sf::Vector2f(3, 3));
-        block.setOutlineThickness(3);
-        block.setFillColor(sf::Color::White);
-        block.setOrigin(paddleSize / 2.f);
-        block.setPosition(x,y);
-        this->m_block_list.push_back(block);
-    }
-}
+void Game::danny(){
+    if (this->dannyClock.getElapsedTime().asSeconds() > 0.5f){
+      if (dannySprite.left > 64) 
+        dannySprite.left = 0;
+      else
+        dannySprite.left += 32;
 
-/**
- * Traverse list of random blocks and display them to window
- */
-void Game::displayBlocks(){
-    std::list<sf::RectangleShape>::iterator it;
-    for (it=m_block_list.begin() ; it != m_block_list.end(); it++ )
-        this->window->draw(*it);
+      sprite.setTextureRect(dannySprite);
+      this->dannyClock.restart();
+    }
 }
 
 /**
@@ -275,24 +249,17 @@ void Game::displayBlocks(){
 void Game::rungame(){
     // Handle events
     this->pollEvents();
-
+    this->danny();
     // Clear the window
     this->window->clear(sf::Color(0, 0, 0));
     if (this->isPlaying){
         // Move user paddle
         this->movePaddle();
-        this->displayBlocks();
         this->window->draw(ball);
-        this->window->draw(paddle);
+        this->window->draw(sprite);
         this->checkWallCollisions();
-        this->checkCollisions(paddle, false);
-        this->blockCollisions();
-        if(m_block_list.size() == 0){
-            defaultMessage.setString("You won!");
-            this->isPlaying = false;
+        this->checkCollisions();
         }
-            
-    }
     else{
         this->checkMenu();
         this->window->draw(background);
@@ -305,7 +272,6 @@ void Game::rungame(){
 
 /**
  * Default global variables for new game class instance
- *
  */
 Game::Game(){
 	this->initVariables();
