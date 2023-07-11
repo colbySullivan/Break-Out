@@ -13,7 +13,7 @@ void Game::initVariables(){
     this->paddleSize = sf::Vector2f(200, 50);
     this->paddleSpeed = 600.f;
     this->isPlaying = false;
-    this->ballAngle = 0.f; // TODO
+    this->ballAngle = 0.f;
     this->ballRadius = 40.f;
     this->pi = 3.14159f;
     this->ballSpeed = 400.f;
@@ -25,7 +25,7 @@ void Game::initVariables(){
  * Creates a new window instance with the global size variables
  */
 void Game::initWindow(){
-	this->window = new sf::RenderWindow(sf::VideoMode(static_cast<unsigned int>(gameWidth), static_cast<unsigned int>(gameHeight), 32), "Template",
+	this->window = new sf::RenderWindow(sf::VideoMode(static_cast<unsigned int>(gameWidth), static_cast<unsigned int>(gameHeight), 32), "Break Out",
                             sf::Style::Titlebar | sf::Style::Close);
     this->window->setVerticalSyncEnabled(true);
     if(!this->backgroundTexture.loadFromFile("resources/basicMenu.png"))
